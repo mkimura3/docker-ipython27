@@ -9,8 +9,8 @@ RUN apt-get upgrade -y
 RUN apt-get install -y curl wget git vim
 
 ### ja_JP.UTF-8 Locale
-RUN apt-get install -y language-pack-ja && \
-    update-locale LANG=ja_JP.UTF-8
+RUN apt-get install -y language-pack-ja
+#    update-locale LANG=ja_JP.UTF-8
 
 ### User add
 RUN useradd ubuntu -m -s /bin/bash && \
@@ -31,9 +31,13 @@ RUN pip install fabric cuisine envassert ecdsa pycrypto
 ### Notebook Dir
 RUN mkdir /notebooks && chown ubuntu:ubuntu /notebooks
 
+ENV LANG ja_JP.UTF-8
+
 USER ubuntu
+
 VOLUME /notebooks
 WORKDIR /notebooks
+
 EXPOSE 8888
 
 CMD ["ipython","notebook","--ip=0.0.0.0","--port=8888","--notebook-dir=/notebooks","--no-browser"]
