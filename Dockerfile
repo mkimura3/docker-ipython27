@@ -1,6 +1,6 @@
 FROM ubuntu:14.04
 
-ENV DEBIAN_FRONTEND noninteractive
+#ENV DEBIAN_FRONTEND noninteractive
 ### system update
 RUN apt-get update
 RUN apt-get upgrade -y
@@ -9,8 +9,12 @@ RUN apt-get upgrade -y
 RUN apt-get install -y curl wget git vim
 
 ### ja_JP.UTF-8 Locale
-RUN apt-get install -y language-pack-ja
+# RUN apt-get install -y language-pack-ja && \
 #    update-locale LANG=ja_JP.UTF-8
+##work around an AppArmor issue with LXC
+COPY locale /etc/default/locale
+RUN locale-gen ja_JP.UTF--8 &&\
+  DEBIAN_FRONTEND=noninteractive dpkg-reconfigure locales
 
 ### User add
 RUN useradd ubuntu -m -s /bin/bash && \
@@ -30,8 +34,6 @@ RUN pip install fabric cuisine envassert ecdsa pycrypto
 
 ### Notebook Dir
 RUN mkdir /notebooks && chown ubuntu:ubuntu /notebooks
-
-ENV LANG ja_JP.UTF-8
 
 USER ubuntu
 
