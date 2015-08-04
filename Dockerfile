@@ -8,22 +8,14 @@ RUN apt-get upgrade -y
 ### additional package
 RUN apt-get install -y curl wget git vim
 
-### ja_JP.UTF-8 Locale
-# RUN apt-get install -y language-pack-ja && \
-#    update-locale LANG=ja_JP.UTF-8
-##work around an AppArmor issue with LXC
-COPY locale /etc/default/locale
-RUN locale-gen ja_JP.UTF--8 &&\
-  DEBIAN_FRONTEND=noninteractive dpkg-reconfigure locales
-
 ### User add
 RUN useradd ubuntu -m -s /bin/bash && \
     echo "ubuntu ALL = NOPASSWD: ALL" >  /etc/sudoers.d/ubuntu
 
 ### ipython
-RUN apt-get install -y python-pip libpython-dev && \
-    apt-get install -y g++ gfortran libopenblas-dev liblapack-dev && \
-    apt-get install -y build-essential python-tk tk-dev libpng12-dev
+RUN apt-get install -y python-pip libpython-dev 
+RUN apt-get install -y g++ gfortran libopenblas-dev liblapack-dev 
+RUN apt-get install -y build-essential python-tk tk-dev libpng12-dev
 
 RUN pip install numpy scipy nose tornado matplotlib pyzmq jinja2 jsonschema
 RUN pip install ipython pandas sympy pygments networkx
@@ -34,6 +26,15 @@ RUN pip install fabric cuisine envassert ecdsa pycrypto
 
 ### Notebook Dir
 RUN mkdir /notebooks && chown ubuntu:ubuntu /notebooks
+
+### ja_JP.UTF-8 Locale
+RUN apt-get install -y language-pack-ja && \
+    update-locale LANG=ja_JP.UTF-8
+ENV LANG ja_JP.UTF-8
+
+### Change TZ
+RUN ln -sf /usr/share/zoneinfo/Japan /etc/localtime
+RUN dpkg-reconfigure --frontend noninteractive tzdata
 
 USER ubuntu
 
