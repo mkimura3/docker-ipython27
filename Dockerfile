@@ -43,5 +43,5 @@ WORKDIR /notebooks
 
 EXPOSE 8888
 
-CMD ["ipython","notebook","--ip=0.0.0.0","--port=8888","--notebook-dir=/notebooks","--no-browser"]
+CMD [ "sh","-c","ipython notebook --ip=0.0.0.0 --port=8888 --notebook-dir=/notebooks --no-browser"]
 
