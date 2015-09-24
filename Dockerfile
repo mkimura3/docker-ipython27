@@ -14,11 +14,11 @@ RUN useradd ubuntu -m -s /bin/bash && \
 
 ### ipython
 RUN apt-get install -y python-pip libpython-dev 
-RUN apt-get install -y g++ gfortran libopenblas-dev liblapack-dev 
+RUN apt-get install -y g++ gfortran liblapack-dev 
 RUN apt-get install -y build-essential python-tk tk-dev libpng12-dev
 
 RUN pip install numpy scipy nose tornado matplotlib pyzmq jinja2 jsonschema
-RUN pip install ipython pandas sympy pygments networkx
+RUN pip install ipython jupyter pandas sympy pygments networkx
 RUN pip install quantities scikit-learn pyreadline
 
 ### Fabric
@@ -36,6 +36,10 @@ ENV LANG ja_JP.UTF-8
 RUN ln -sf /usr/share/zoneinfo/Japan /etc/localtime
 RUN dpkg-reconfigure --frontend noninteractive tzdata
 
+### Install Additional Packages
+ADD requirements.txt /tmp/
+RUN pip install -r /tmp/requirements.txt
+
 USER ubuntu
 
 VOLUME /notebooks
@@ -44,4 +48,3 @@ WORKDIR /notebooks
 EXPOSE 8888
 
 CMD [ "sh","-c","ipython notebook --ip=0.0.0.0 --port=8888 --notebook-dir=/notebooks --no-browser"]
-

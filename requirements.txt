@@ -1,0 +1,4 @@
+docopt
+selenium
+sugarcrm
+
